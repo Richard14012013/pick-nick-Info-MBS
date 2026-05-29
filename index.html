@@ -1,14 +1,101 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<title>Klassenfest</title>
+  <meta charset="UTF-8">
+  <title>Klassenfest Picknick</title>
+  <style>
+    body {
+      font-family: Arial;
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      background: #f7f7f7;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .entry {
+      background: white;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+    }
+  </style>
 </head>
+
 <body>
 
-<h1>🎉Pick nick Info 7 🎉</h1>
+<h1>🎉 Klassenfest Liste</h1>
 
-<p>Die Webseite funktioniert!</p>
+<input id="name" placeholder="Name des Kindes">
+<input id="item" placeholder="Was wird mitgebracht">
+<input id="amount" placeholder="Anzahl">
+<button onclick="save()">Speichern</button>
+
+<h2>Liste</h2>
+<div id="list"></div>
+
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const SUPABASE_URL = "https://ffmevdsnhymsljxnotzk.supabase.co";
+const SUPABASE_KEY = "sb_publishable_VLvvOaD93tauPDeM2etZug_n9Ph3_vj";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function loadData() {
+  const { data } = await supabase
+    .from("info_picknick")
+    .select("*")
+    .order("id", { ascending: false });
+
+  document.getElementById("list").innerHTML = "";
+
+  data.forEach(row => {
+    document.getElementById("list").innerHTML += `
+      <div class="entry">
+        <b>${row.title}</b><br>
+        ${row.description}<br>
+        Menge: ${row.category}
+      </div>
+    `;
+  });
+}
+
+async function save() {
+  const title = document.getElementById("name").value;
+  const description = document.getElementById("item").value;
+  const category = document.getElementById("amount").value;
+
+  // EIN Eintrag pro Kind (wird überschrieben)
+  await supabase
+    .from("info_picknick")
+    .upsert(
+      [{ title, description, category }],
+      { onConflict: "title" }
+    );
+
+  loadData();
+}
+
+loadData();
+</script>
 
 </body>
 </html>
