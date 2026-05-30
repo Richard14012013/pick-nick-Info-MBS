@@ -67,6 +67,7 @@ async function loadData() {
 
   document.getElementById("list").innerHTML = "";
 
+  if (!data) return;
   data.forEach(row => {
     document.getElementById("list").innerHTML += `
       <div class="entry">
