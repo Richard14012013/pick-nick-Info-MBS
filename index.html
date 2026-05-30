@@ -87,9 +87,9 @@ window.save = async function() {
   // EIN Eintrag pro Kind (wird überschrieben)
   await supabase
     .from("info_picknick")
-    .upsert(
+    .insert(
       [{ title, description, category }],
-      { onConflict: "title" }
+      
     );
 
   loadData();
