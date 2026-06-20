@@ -61,7 +61,7 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function loadData() {
   const { data } = await supabase
-    .from("info_picknick")
+    .from("Hoffest")
     .select("*")
     .order("id", { ascending: false });
 
@@ -86,7 +86,7 @@ window.save = async function() {
 
   // EIN Eintrag pro Kind (wird überschrieben)
   await supabase
-    .from("info_picknick")
+    .from("Hoffest")
     .insert(
       [{ title, description, category }],
       
